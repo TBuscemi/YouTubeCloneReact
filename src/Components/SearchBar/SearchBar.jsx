@@ -15,8 +15,8 @@ class SearchBar extends Component {
             [event.target.name] : event.target.value
         })
     }
-    handleSubmit=(e) =>{
-        e.preventDefault()
+    handleSubmit=(ex) =>{
+        ex.preventDefault()
         this.props.filter(this.state.field, this.state.search)
     }
     render() { 
