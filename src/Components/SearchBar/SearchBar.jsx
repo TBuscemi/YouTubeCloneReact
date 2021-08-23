@@ -4,31 +4,31 @@ import React, { Component } from 'react';
 class SearchBar extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            search: "",
-            field : ""
-  
+        this.state = {
+            user_search: ''
         }
     }
-    onChange=(event)=>{
+
+    handleChange = (event) => {
         this.setState({
-            [event.target.name] : event.target.value
-        })
+            user_search : event.target.value
+        });
     }
-    handleSubmit=(e) =>{
-        e.preventDefault()
-        this.props.filter(this.state.field, this.state.search)
+    
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.props.searchQuery(this.state)
     }
+    
     render() { 
         return ( 
-            <div>
                 <form onSubmit={this.handleSubmit}>
-                    <input onChange={this.onChange} name="searchTerm"></input>
+                    <label htmlFor='video-search'>Search</label>
+                    <input onChange={this.handleChange}></input>
                     <button type="submit">Submit</button>
                 </form>
-            </div>
   
-      );
+        );
     }
 }
 
