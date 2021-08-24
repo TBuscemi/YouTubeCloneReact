@@ -47,7 +47,7 @@ class App extends Component {
         
         try{  
             
-            let response = await axios.get('https://www.googleapis.com/youtube/v3/search?q=' + {user_search} + '&key=AIzaSyCYaSiKtKMiU-P91FpjJZJ5crSaBuMczVw&maxResults=5');
+            let response = await axios.get('https://www.googleapis.com/youtube/v3/search?q=' + {user_search} + '&key=AIzaSyDs-up5MDmxBJK_Rrkw_l8sicAkHOgYpk4&maxResults=5');
             console.log(user_search)
             console.log(response.data.items)
             let relatedVideos = response.data.items;
