@@ -5,56 +5,39 @@ import VideoPlayer from './VideoPlayer/VideoPlayer';
 import SearchBar from './SearchBar/SearchBar'
 // import YouTubeKey from './Api/YouTubeApi';
 import RelatedVideos from './RelatedVideo/RelatedVideo';
+import Comment from './Comment/Comment';
+import CommentSection from './CommentSection/CommentSection';
 
 
 class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-        relatedVideos: []
+        relatedVideos: [],
+        comments: {}
         }            
     }
-
-    // handleFormSubmit = async (searchResult) => {
-    //     const response = await youtube.get('/search', {
-    //         params: {
-    //             q: searchResult
-    //         }
-    //     })
-
-    //     this.setState({
-    //         videos: response.data.items
-    //     })
-    //     console.log('this is resp', response);
-    // }
-
-    // newSearch = (user_search) => {
-    //     console.log("Inside newSearch: ", user_search);
-
-    //     axios.get('https://www.googleapis.com/youtube/v3/search?q=' + {user_search} + '&key=AIzaSyCYaSiKtKMiU-P91FpjJZJ5crSaBuMczVw&maxResults=5')
-    //     .then(response => this.setState({
-    //         videos: response.data
-    //      }));
-        
-    //      console.log("State Videos items: ", this.state.videos.items);
-    // }
 
     componentDidMount(){
         this.newSearch();
     }
 
-    async newSearch(user_search){
-        
+   
+
+    async newSearch(search_term){
+        if (search_term === "" || search_term === null){
+            return;
+        }
         try{  
             
-            let response = await axios.get('https://www.googleapis.com/youtube/v3/search?q=' + {user_search} + '&key=AIzaSyDs-up5MDmxBJK_Rrkw_l8sicAkHOgYpk4&maxResults=5');
-            console.log(user_search)
-            console.log(response.data.items)
-            let relatedVideos = response.data.items;
+            console.log("Search Term: ", search_term)
+            let response = await axios.get(`https://www.googleapis.com/youtube/v3/search?q=${search_term}&key=AIzaSyCYaSiKtKMiU-P91FpjJZJ5crSaBuMczVw&maxResults=5`);
+            console.log("Response Items: ", response.data.items)
+            let relatedVideoData = response.data.items;
             let videoArray = []
-            for (let i = 0; i < relatedVideos.length; i++) {
-                console.log(relatedVideos[i].id.videoId)
-                videoArray.push(relatedVideos[i].id.videoId)
+            for (let i = 0; i < relatedVideoData.length; i++) {
+                console.log(relatedVideoData[i].id.videoId)
+                videoArray.push(relatedVideoData[i].id.videoId)
             }
             this.setState({relatedVideos:videoArray})
         }
@@ -63,13 +46,51 @@ class App extends Component {
         }
     }
     
+    async addComment(newComment){ 
+        try{
+          await axios.post("http://127.0.0.1:8000/comments/", newComment)
+        }
+        catch(ex){
+            console.log("something broke in addComment")
+        }
+    } 
+     
     
+    componentDidMount(){
+        this.getComments();
+    }
+
+
+    async getComments(){ 
+        try{
+            let response = await axios.get('http://127.0.0.1:8000/comments/')
+            let commentData = response.data;
+            let commentArray = [];
+            for (let i = 0; i < commentData.length; i++) {
+                console.log(commentData[i].text)
+                commentArray.push(commentData[i].text)
+                console.log(commentArray)
+            }
+            this.setState({
+                comments : commentArray
+            });
+            console.log(this.state.comments)
+        }
+        catch(ex){
+            console.log("something broke in get comments")
+            console.log(this.state.comments)
+        }
+    } 
+
     render(){
         return(
             <div>
                 <SearchBar searchQuery={this.newSearch} />
                 <VideoPlayer/>        
-                <RelatedVideos videos={this.state.relatedVideos}/>          
+                <RelatedVideos videos={this.state.relatedVideos}/>
+                <Comment commentAdded={this.addComment} />
+                <CommentSection allComments={this.state.comments}/>
+                
             </div>
         )
     }

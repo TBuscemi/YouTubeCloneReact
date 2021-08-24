@@ -4,20 +4,16 @@ import React, { Component } from 'react';
 class SearchBar extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            user_search: ''
-        }
+        this.state = {}
     }
 
     handleChange = (event) => {
-        this.setState({
-            user_search : event.target.value
-        });
+        this.setState({user_search: event.target.value});
     }
     
     handleSubmit = (event) => {
         event.preventDefault();
-        this.props.searchQuery(this.state)
+        this.props.searchQuery(this.state.user_search)
     }
     
     render() { 
@@ -27,7 +23,6 @@ class SearchBar extends Component {
                     <input onChange={this.handleChange}></input>
                     <button type="submit">Submit</button>
                 </form>
-  
         );
     }
 }
